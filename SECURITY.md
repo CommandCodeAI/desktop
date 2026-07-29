@@ -1,9 +1,12 @@
 # Security
 
 Please do not report security vulnerabilities in public GitHub issues or
-Discord channels.
+Discord channels. Use GitHub's
+[private vulnerability report](https://github.com/CommandCodeAI/gui/security/advisories/new)
+so the Command Code team can investigate with you privately.
 
-Send reports to [team@commandcode.ai](mailto:team@commandcode.ai) with:
+If GitHub reporting is unavailable, email
+[team@commandcode.ai](mailto:team@commandcode.ai). Include:
 
 - A clear description of the issue and its potential impact
 - The affected Command Code GUI version and operating system

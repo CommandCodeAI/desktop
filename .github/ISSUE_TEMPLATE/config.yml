@@ -4,5 +4,5 @@ contact_links:
     url: https://commandcode.ai/discord
     about: Ask questions and discuss Command Code with the community.
   - name: Security report
-    url: mailto:team@commandcode.ai
+    url: https://github.com/CommandCodeAI/gui/security/advisories/new
     about: Report security vulnerabilities privately.

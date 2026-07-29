@@ -6,6 +6,7 @@ The visual workspace for Command Code.
 
 [![Download for macOS](https://img.shields.io/badge/Download_for_macOS-0.1.0-111111?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/CommandCodeAI/gui/releases)
 [![Download for Linux](https://img.shields.io/badge/Download_for_Linux-0.1.0-FCC624?style=for-the-badge&logo=linux&logoColor=111111)](https://github.com/CommandCodeAI/gui/releases)
+[![Windows coming soon](https://img.shields.io/badge/Windows-Coming_soon-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://commandcode.ai/gui)
 
 [Product page](https://commandcode.ai/gui) · [Releases](https://github.com/CommandCodeAI/gui/releases) · [Report a bug](https://github.com/CommandCodeAI/gui/issues/new/choose) · [Discord](https://commandcode.ai/discord)
 
