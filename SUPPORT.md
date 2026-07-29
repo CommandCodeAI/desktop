@@ -22,8 +22,9 @@ Feature requests and workflow feedback are welcome through
 
 ## Installation help
 
-Follow [INSTALL.md](INSTALL.md) for macOS and Linux installation, checksum
-verification, and unsigned-preview troubleshooting.
+Follow [INSTALL.md](INSTALL.md) for macOS installation, digest verification,
+and unsigned-preview troubleshooting. Linux and Windows builds are coming
+soon.
 
 Security vulnerabilities must be reported privately using
 [SECURITY.md](SECURITY.md).

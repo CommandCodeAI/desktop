@@ -1,23 +1,24 @@
 # Install Command Code GUI
 
-Download version 0.1.0 from the official
-[GitHub Releases page](https://github.com/CommandCodeAI/gui/releases).
+Download version 0.1.0 directly from the official repository:
+
+[Download Command Code 0.1.0 for Apple silicon](https://github.com/CommandCodeAI/gui/releases/download/v0.1.0/CommandCode-0.1.0-arm64.dmg)
 
 > [!WARNING]
 > Version 0.1.0 is an unsigned public preview. Only install files downloaded
-> from `github.com/CommandCodeAI/gui`, and verify the published SHA-256
-> checksum before bypassing an operating-system warning.
+> from `github.com/CommandCodeAI/gui`, and verify the SHA-256 digest below
+> before bypassing an operating-system warning.
 
 ## macOS
 
 The current macOS preview supports Apple silicon.
 
-1. Download `CommandCode-0.1.0-arm64.dmg` and `SHA256SUMS`.
+1. Download `CommandCode-0.1.0-arm64.dmg` using the link above.
 2. In Terminal, verify the download:
 
    ```bash
    cd ~/Downloads
-   grep 'CommandCode-0.1.0-arm64.dmg' SHA256SUMS | shasum -a 256 -c -
+   echo '464a7756bcf80e7961954e44a14b54c08e23adb8f7da84a41c4234717459f39c  CommandCode-0.1.0-arm64.dmg' | shasum -a 256 -c -
    ```
 
 3. Open the DMG and drag **Command Code** into **Applications**.
@@ -40,27 +41,9 @@ Quit Command Code, then move `/Applications/Command Code.app` to the Trash.
 
 ## Linux
 
-### Debian or Ubuntu
-
-1. Download `CommandCode-0.1.0-linux-x64.deb` and `SHA256SUMS`.
-2. Verify and install:
-
-   ```bash
-   cd ~/Downloads
-   grep 'CommandCode-0.1.0-linux-x64.deb' SHA256SUMS | sha256sum -c -
-   sudo apt install ./CommandCode-0.1.0-linux-x64.deb
-   ```
-
-### AppImage
-
-If the release includes an AppImage:
-
-```bash
-cd ~/Downloads
-grep 'CommandCode-0.1.0-linux-x64.AppImage' SHA256SUMS | sha256sum -c -
-chmod +x CommandCode-0.1.0-linux-x64.AppImage
-./CommandCode-0.1.0-linux-x64.AppImage
-```
+Linux is not included in the 0.1.0 public preview. The download and verified
+installation instructions will be added when the Linux package passes its
+release gate.
 
 ## Windows
 
@@ -71,8 +54,8 @@ installers shared by unofficial accounts.
 
 Automatic updates are disabled for unsigned previews. To update:
 
-1. Open the [Releases page](https://github.com/CommandCodeAI/gui/releases).
-2. Download and verify the newest build.
+1. Open the [product page](https://commandcode.ai/gui).
+2. Download and verify the newest DMG.
 3. Install it over the existing version.
 
 Signed builds will use the normal operating-system trust flow and support

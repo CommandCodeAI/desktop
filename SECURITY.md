@@ -18,10 +18,10 @@ you when appropriate.
 
 ## Preview-build safety
 
-Version 0.1.0 is an unsigned preview. Download installers only from the
-official [CommandCodeAI/gui Releases page](https://github.com/CommandCodeAI/gui/releases)
-and verify the provided SHA-256 checksum.
+Version 0.1.0 is an unsigned preview. Use only the direct download link in the
+official [CommandCodeAI/gui repository](https://github.com/CommandCodeAI/gui)
+and verify the SHA-256 digest documented in `INSTALL.md`.
 
-Checksums confirm that a download matches the file we published; they do not
+The digest confirms that a download matches the file we published; it does not
 replace operating-system code signing. Signed and notarized builds are planned
 for the production release.

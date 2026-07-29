@@ -4,11 +4,11 @@
 
 The visual workspace for Command Code.
 
-[![Download for macOS](https://img.shields.io/badge/Download_for_macOS-0.1.0-111111?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/CommandCodeAI/gui/releases)
-[![Download for Linux](https://img.shields.io/badge/Download_for_Linux-0.1.0-FCC624?style=for-the-badge&logo=linux&logoColor=111111)](https://github.com/CommandCodeAI/gui/releases)
+[![Download for macOS](https://img.shields.io/badge/Download_for_macOS-0.1.0-111111?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/CommandCodeAI/gui/releases/download/v0.1.0/CommandCode-0.1.0-arm64.dmg)
+[![Linux coming soon](https://img.shields.io/badge/Linux-Coming_soon-FCC624?style=for-the-badge&logo=linux&logoColor=111111)](https://commandcode.ai/gui)
 [![Windows coming soon](https://img.shields.io/badge/Windows-Coming_soon-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://commandcode.ai/gui)
 
-[Product page](https://commandcode.ai/gui) · [Releases](https://github.com/CommandCodeAI/gui/releases) · [Report a bug](https://github.com/CommandCodeAI/gui/issues/new/choose) · [Discord](https://commandcode.ai/discord)
+[Product page](https://commandcode.ai/gui) · [Report a bug](https://github.com/CommandCodeAI/gui/issues/new/choose) · [Discord](https://commandcode.ai/discord)
 
 </div>
 
@@ -37,21 +37,21 @@ Highlights:
 
 | Platform | Build | Download |
 | --- | --- | --- |
-| macOS | Apple silicon | [Download from Releases](https://github.com/CommandCodeAI/gui/releases) |
-| Linux | x64 `.deb` / AppImage | [Download from Releases](https://github.com/CommandCodeAI/gui/releases) |
+| macOS | Apple silicon | [Download DMG](https://github.com/CommandCodeAI/gui/releases/download/v0.1.0/CommandCode-0.1.0-arm64.dmg) |
+| Linux | Not included in this preview | Coming soon |
 | Windows | Not included in this preview | Coming soon |
 
-Always download Command Code from this repository and verify the checksum
-published with the release.
+Always download Command Code from this repository. GitHub displays the
+SHA-256 digest for the uploaded DMG.
 
 ## Install
 
 See the complete [installation guide](INSTALL.md), including the temporary
 steps required to open the unsigned macOS preview.
 
-Updates are manual during the unsigned preview. Return to
-[GitHub Releases](https://github.com/CommandCodeAI/gui/releases) for each new
-version. Automatic updates will be enabled after production signing is ready.
+Updates are manual during the unsigned preview. Return to the
+[product page](https://commandcode.ai/gui) for each new version. Automatic
+updates will be enabled after production signing is ready.
 
 ## Feedback
 
