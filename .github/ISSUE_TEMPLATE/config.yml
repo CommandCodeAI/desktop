@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Command Code Discord
+    url: https://commandcode.ai/discord
+    about: Ask questions and discuss Command Code with the community.
+  - name: Security report
+    url: mailto:team@commandcode.ai
+    about: Report security vulnerabilities privately.

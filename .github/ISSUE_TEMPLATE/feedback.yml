@@ -1,0 +1,37 @@
+name: GUI feedback
+description: Suggest an improvement to the desktop experience
+title: "[Feedback]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the workflow and where it becomes slow or confusing.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would improve it?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do today?
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Chat and composer
+        - Projects and sessions
+        - Plans
+        - Files and diffs
+        - Git
+        - Terminal
+        - Settings
+        - Installation and updates
+        - Other
