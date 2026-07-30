@@ -8,62 +8,111 @@ The visual workspace for Command Code.
 
 </div>
 
-## Install
+## Install or update
 
-The installer detects your operating system and architecture, downloads the
-newest official release, verifies its SHA-256 digest, and installs the app.
+Copy the command for your operating system and paste it into the terminal.
+Running the same command again installs the newest available version.
 
-macOS or Linux:
+### macOS
+
+Apple silicon:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.sh | bash
 ```
 
-Windows PowerShell:
+### Linux
+
+Ubuntu or Debian, x64:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.sh | bash
+```
+
+### Windows
+
+Open PowerShell and run:
 
 ```powershell
 irm https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.ps1 | iex
 ```
 
-[Read the macOS/Linux installer](install.sh) ·
-[Read the Windows installer](install.ps1) ·
-[Installation details](INSTALL.md)
+The installer:
+
+1. Detects the operating system and CPU architecture.
+2. Selects the newest matching release.
+3. Downloads only from `CommandCodeAI/gui`.
+4. Verifies GitHub's published SHA-256 digest.
+5. Installs and opens Command Code.
+
+It exits without installing when a matching verified release is unavailable.
 
 > [!IMPORTANT]
-> Preview builds are not yet signed by Apple or Microsoft. The installers
-> verify GitHub's published SHA-256 digest and ask before applying any temporary
-> unsigned-build workaround. They never disable operating-system security
-> globally. Signed and notarized builds will use the normal trust flow.
+> Preview builds are not yet signed by Apple or Microsoft. The installer asks
+> before applying a temporary unsigned-build workaround to Command Code. It
+> never disables Gatekeeper, SmartScreen, or another system-wide security
+> control. These prompts will disappear from signed production builds.
+
+[Read `install.sh`](install.sh) ·
+[Read `install.ps1`](install.ps1) ·
+[Installation details](INSTALL.md)
+
+<details>
+<summary>Install a specific version</summary>
+
+macOS or Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.sh | COMMANDCODE_VERSION=0.1.0 bash
+```
+
+Windows PowerShell:
+
+```powershell
+$env:COMMANDCODE_VERSION="0.1.0"; irm https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.ps1 | iex
+```
+
+</details>
 
 ## Direct downloads
 
-| Platform | Current build |
-| --- | --- |
-| macOS | [Apple silicon DMG](https://github.com/CommandCodeAI/gui/releases) |
-| Linux | [x64 DEB](https://github.com/CommandCodeAI/gui/releases) |
-| Windows | [x64 installer](https://github.com/CommandCodeAI/gui/releases) |
+Prefer the installer above because it selects and verifies the correct build
+automatically. Manual packages are available on the
+[releases page](https://github.com/CommandCodeAI/gui/releases).
 
-## What is Command Code GUI?
+| Platform | Package | Architecture |
+| --- | --- | --- |
+| macOS | `.dmg` | Apple silicon |
+| Linux | `.deb` | x64 |
+| Windows | `.exe` | x64 |
 
-Command Code GUI brings the Command Code agent into a focused desktop
-workspace. Manage projects and chats, review plans, inspect file changes, work
-with Git, and use the integrated terminal without leaving the application.
+## What you can do
 
-- Project and session management
-- Streaming agent conversations and task progress
-- Plan review and iterative feedback
-- File browser, source preview, and line-level diffs
-- Git changes, discard, commit, and push workflows
-- Integrated project terminal
-- Configurable models, permissions, themes, and shortcuts
+- Organize projects and session history
+- Stream agent conversations and task progress
+- Review plans and send iterative feedback
+- Browse files and inspect line-level diffs
+- Review, discard, commit, and push Git changes
+- Run commands in the integrated project terminal
+- Choose models, permission modes, themes, and shortcuts
 
-## Feedback
+## Requirements
 
-- [Open a bug report](https://github.com/CommandCodeAI/gui/issues/new/choose)
+- A supported operating system and architecture from the table above
+- Internet access to download the release from GitHub
+- Administrator permission when the operating system requires it
+
+Command Code CLI does not need to be installed separately.
+
+## Help and feedback
+
+- [Report an installation problem or GUI bug](https://github.com/CommandCodeAI/gui/issues/new/choose)
 - [Join the Discord community](https://commandcode.ai/discord)
 - Read [SUPPORT.md](SUPPORT.md) before sharing logs or screenshots
 
-Report vulnerabilities privately by following [SECURITY.md](SECURITY.md).
+Report security vulnerabilities privately by following
+[SECURITY.md](SECURITY.md). Do not include tokens, private source files, or
+`.env` contents in public reports.
 
 ## Repository scope
 
