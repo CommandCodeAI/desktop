@@ -28,7 +28,7 @@ require_command() {
 
 confirm_unsigned_macos() {
 	printf '%s\n' \
-		'This preview is not yet signed by Apple.' \
+		'This preview is not yet signed and notarized for public distribution.' \
 		'Continuing will remove quarantine from Command Code only and apply' \
 		'a local ad-hoc signature. It will not disable Gatekeeper.'
 	printf 'Continue? [y/N] '
@@ -37,6 +37,24 @@ confirm_unsigned_macos() {
 		y | Y | yes | YES) ;;
 		*) fail "Installation cancelled." ;;
 	esac
+}
+
+has_developer_id_signature() {
+	app_path="$1"
+	codesign -dv --verbose=4 "$app_path" 2>&1 |
+		grep -q '^Authority=Developer ID Application:'
+}
+
+is_valid_version() {
+	version_to_validate="$1"
+	printf '%s\n' "$version_to_validate" |
+		grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$'
+}
+
+validate_version() {
+	version_to_validate="$1"
+	is_valid_version "$version_to_validate" ||
+		fail "The release returned an invalid version: $version_to_validate"
 }
 
 read_asset_metadata() {
@@ -91,7 +109,41 @@ verify_sha256() {
 		fail "Downloaded file failed SHA-256 verification."
 }
 
-install_macos() {
+replace_macos_app() {
+	staged_app="$1"
+	destination="/Applications/Command Code.app"
+	backup="/Applications/.Command Code.previous.$$"
+
+	if [ -w /Applications ]; then
+		if [ -e "$destination" ]; then
+			mv "$destination" "$backup"
+		fi
+		if ! ditto "$staged_app" "$destination"; then
+			rm -rf "$destination"
+			if [ -e "$backup" ]; then
+				mv "$backup" "$destination"
+			fi
+			fail "Could not copy Command Code into /Applications."
+		fi
+		rm -rf "$backup"
+		return
+	fi
+
+	printf 'Administrator permission is required to install in /Applications.\n'
+	if [ -e "$destination" ]; then
+		sudo mv "$destination" "$backup"
+	fi
+	if ! sudo ditto "$staged_app" "$destination"; then
+		sudo rm -rf "$destination"
+		if sudo test -e "$backup"; then
+			sudo mv "$backup" "$destination"
+		fi
+		fail "Could not copy Command Code into /Applications."
+	fi
+	sudo rm -rf "$backup"
+}
+
+mount_macos_archive() {
 	archive_path="$1"
 
 	mount_output="$(hdiutil attach -nobrowse -readonly "$archive_path")"
@@ -102,34 +154,50 @@ install_macos() {
 	)"
 	[ -n "$MOUNT_POINT" ] || fail "Could not mount the downloaded DMG."
 
-	app_source="$(find "$MOUNT_POINT" -maxdepth 1 -type d -name '*.app' -print -quit)"
-	if [ -z "$app_source" ]; then
+	APP_SOURCE="$(find "$MOUNT_POINT" -maxdepth 1 -type d -name '*.app' -print -quit)"
+	if [ -z "$APP_SOURCE" ]; then
 		fail "The DMG does not contain an application."
 	fi
+}
 
-	destination="/Applications/Command Code.app"
-	if [ -w /Applications ]; then
-		rm -rf "$destination"
-		ditto "$app_source" "$destination"
-	else
-		printf 'Administrator permission is required to install in /Applications.\n'
-		sudo rm -rf "$destination"
-		sudo ditto "$app_source" "$destination"
-	fi
-	hdiutil detach "$MOUNT_POINT" >/dev/null
+verify_macos_archive() {
+	archive_path="$1"
+	hdiutil verify "$archive_path" >/dev/null
+	mount_macos_archive "$archive_path"
+	[ -s "$APP_SOURCE/Contents/Resources/app/node_modules/@commandcode/harness/dist/index.js" ] ||
+		fail "The macOS package is missing the compiled harness."
+	[ -s "$APP_SOURCE/Contents/Resources/app/node_modules/command-code/dist/cli.mjs" ] ||
+		fail "The macOS package is missing the compiled engine."
+	hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || true
+	MOUNT_POINT=""
+}
+
+install_macos() {
+	archive_path="$1"
+	mount_macos_archive "$archive_path"
+
+	staged_app="$TEMPORARY_DIRECTORY/Command Code.app"
+	ditto "$APP_SOURCE" "$staged_app"
+	hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || true
 	MOUNT_POINT=""
 
-	if ! spctl --assess --type execute "$destination" >/dev/null 2>&1; then
-		confirm_unsigned_macos
-		if [ -w "$destination" ]; then
-			xattr -dr com.apple.quarantine "$destination"
-			codesign --force --deep --sign - "$destination"
-		else
-			sudo xattr -dr com.apple.quarantine "$destination"
-			sudo codesign --force --deep --sign - "$destination"
+	if ! spctl --assess --type execute "$staged_app" >/dev/null 2>&1; then
+		if has_developer_id_signature "$staged_app"; then
+			fail "The Developer ID release failed Gatekeeper assessment. Installation stopped without changing the existing app."
 		fi
+		confirm_unsigned_macos
+		xattr -dr com.apple.quarantine "$staged_app"
+		codesign --force --deep --sign - "$staged_app"
+		codesign --verify --deep --strict "$staged_app" >/dev/null 2>&1 ||
+			fail "The local ad-hoc signature could not be verified."
 	fi
 
+	if pgrep -x "Command Code" >/dev/null 2>&1; then
+		fail "Quit Command Code, then run the installer again."
+	fi
+
+	replace_macos_app "$staged_app"
+	destination="/Applications/Command Code.app"
 	open "$destination"
 }
 
@@ -150,13 +218,20 @@ machine_architecture="$(uname -m)"
 
 case "$operating_system:$machine_architecture" in
 	Darwin:arm64 | Darwin:aarch64)
+		require_command codesign
+		require_command ditto
+		require_command hdiutil
+		require_command open
+		require_command pgrep
+		require_command spctl
+		require_command xattr
 		platform="macOS"
 		artifact_architecture="arm64"
 		artifact_extension="dmg"
 		;;
 	Linux:x86_64 | Linux:amd64)
 		platform="Linux"
-		artifact_architecture="x64"
+		artifact_architecture="amd64"
 		artifact_extension="deb"
 		;;
 	Darwin:*)
@@ -171,8 +246,10 @@ case "$operating_system:$machine_architecture" in
 esac
 
 release_file="$TEMPORARY_DIRECTORY/release.json"
+version=""
 if [ -n "${COMMANDCODE_VERSION:-}" ]; then
 	version="${COMMANDCODE_VERSION#v}"
+	validate_version "$version"
 	curl --fail --silent --show-error --location \
 		-H "Accept: application/vnd.github+json" \
 		"$API_ROOT/releases/tags/v$version" \
@@ -180,20 +257,41 @@ if [ -n "${COMMANDCODE_VERSION:-}" ]; then
 else
 	curl --fail --silent --show-error --location \
 		-H "Accept: application/vnd.github+json" \
-		"$API_ROOT/releases?per_page=1" \
+		"$API_ROOT/releases?per_page=20" \
 		-o "$release_file"
-	version="$(
+fi
+
+release_versions="$version"
+if [ -z "${COMMANDCODE_VERSION:-}" ]; then
+	release_versions="$(
 		awk -F'"' '/"tag_name":/ {
 			sub(/^v/, "", $4)
 			print $4
-			exit
 		}' "$release_file"
 	)"
 fi
-[ -n "$version" ] || fail "Could not determine the latest release."
+[ -n "$release_versions" ] || fail "Could not determine the latest release."
 
-artifact_name="CommandCode-$version-$artifact_architecture.$artifact_extension"
-asset_metadata="$(read_asset_metadata "$artifact_name" "$release_file")"
+version=""
+artifact_name=""
+asset_metadata=""
+while IFS= read -r candidate_version; do
+	[ -n "$candidate_version" ] || continue
+	is_valid_version "$candidate_version" || continue
+	candidate_artifact="CommandCode-$candidate_version-$artifact_architecture.$artifact_extension"
+	candidate_metadata="$(read_asset_metadata "$candidate_artifact" "$release_file")"
+	if [ -n "$candidate_metadata" ]; then
+		version="$candidate_version"
+		artifact_name="$candidate_artifact"
+		asset_metadata="$candidate_metadata"
+		break
+	fi
+done <<EOF
+$release_versions
+EOF
+
+[ -n "$artifact_name" ] ||
+	fail "No verified $platform package was found in the 20 newest releases."
 asset_digest="$(printf '%s\n' "$asset_metadata" | sed -n '1p')"
 asset_url="$(printf '%s\n' "$asset_metadata" | sed -n '2p')"
 
@@ -216,6 +314,14 @@ printf 'Downloading Command Code %s for %s...\n' "$version" "$platform"
 curl --fail --show-error --location "$asset_url" -o "$archive_path"
 verify_sha256 "$archive_path" "$expected_digest"
 printf 'Verified SHA-256: %s\n' "$expected_digest"
+
+if [ "${COMMANDCODE_INSTALL_VERIFY_ONLY:-0}" = "1" ]; then
+	if [ "$operating_system" = "Darwin" ]; then
+		verify_macos_archive "$archive_path"
+	fi
+	printf 'Download verification completed without installing.\n'
+	exit 0
+fi
 
 case "$operating_system" in
 	Darwin) install_macos "$archive_path" ;;

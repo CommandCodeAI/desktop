@@ -48,10 +48,11 @@ The installer:
 It exits without installing when a matching verified release is unavailable.
 
 > [!IMPORTANT]
-> Preview builds are not yet signed by Apple or Microsoft. The installer asks
-> before applying a temporary unsigned-build workaround to Command Code. It
-> never disables Gatekeeper, SmartScreen, or another system-wide security
-> control. These prompts will disappear from signed production builds.
+> Preview builds are not yet production-signed and notarized for public
+> distribution. The installer asks before applying a temporary unsigned-build
+> workaround to Command Code. It never disables Gatekeeper, SmartScreen, or
+> another system-wide security control. These prompts will disappear from
+> signed production builds.
 
 [Read `install.sh`](install.sh) ·
 [Read `install.ps1`](install.ps1) ·

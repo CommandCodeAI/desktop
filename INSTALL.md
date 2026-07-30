@@ -25,11 +25,12 @@ irm https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.ps1 | iex
 The scripts fail without installing anything when a matching verified artifact
 is unavailable.
 
-Preview builds are not yet signed by Apple or Microsoft. On macOS, the script
-asks before removing quarantine from Command Code only and applying a local
-ad-hoc signature. It does not disable Gatekeeper. On Windows, the script asks
-before opening an unsigned but SHA-256-verified installer. These temporary
-prompts disappear when production signing is enabled.
+Preview builds are not yet production-signed and notarized for public
+distribution. On macOS, the script asks before removing quarantine from Command
+Code only and applying a local ad-hoc signature. It does not disable Gatekeeper.
+On Windows, the script asks before opening an unsigned but SHA-256-verified
+installer. These temporary prompts disappear when production signing is
+enabled.
 
 The source is public:
 
