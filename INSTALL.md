@@ -1,69 +1,57 @@
 # Install Command Code GUI
 
-Download version 0.1.0 directly from the official repository:
+## One-command installation
 
-[Download Command Code 0.1.0 for Apple silicon](https://github.com/CommandCodeAI/gui/releases/download/v0.1.0/CommandCode-0.1.0-arm64.dmg)
-
-> [!WARNING]
-> Version 0.1.0 is an unsigned public preview. Only install files downloaded
-> from `github.com/CommandCodeAI/gui`, and verify the SHA-256 digest below
-> before bypassing an operating-system warning.
-
-## macOS
-
-The current macOS preview supports Apple silicon.
-
-1. Download `CommandCode-0.1.0-arm64.dmg` using the link above.
-2. In Terminal, verify the download:
-
-   ```bash
-   cd ~/Downloads
-   echo '464a7756bcf80e7961954e44a14b54c08e23adb8f7da84a41c4234717459f39c  CommandCode-0.1.0-arm64.dmg' | shasum -a 256 -c -
-   ```
-
-3. Open the DMG and drag **Command Code** into **Applications**.
-4. In Applications, Control-click **Command Code**, choose **Open**, and then
-   choose **Open** again.
-
-If macOS still reports that the verified app is damaged:
+macOS or Linux:
 
 ```bash
-xattr -dr com.apple.quarantine "/Applications/Command Code.app"
-open "/Applications/Command Code.app"
+curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.sh | bash
 ```
 
-Run that command only after the checksum succeeds. Do not disable Gatekeeper
-globally.
+Windows PowerShell:
 
-### Remove the macOS preview
+```powershell
+irm https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.ps1 | iex
+```
 
-Quit Command Code, then move `/Applications/Command Code.app` to the Trash.
+## What the installers do
 
-## Linux
+1. Detect the operating system and supported CPU architecture.
+2. Read the newest release from `CommandCodeAI/gui`.
+3. Select the matching `.dmg`, `.deb`, or `.exe`.
+4. Verify the SHA-256 digest published by GitHub.
+5. Install and open Command Code.
 
-Linux is not included in the 0.1.0 public preview. The download and verified
-installation instructions will be added when the Linux package passes its
-release gate.
+The scripts fail without installing anything when a matching verified artifact
+is unavailable.
 
-## Windows
+Preview builds are not yet signed by Apple or Microsoft. On macOS, the script
+asks before removing quarantine from Command Code only and applying a local
+ad-hoc signature. It does not disable Gatekeeper. On Windows, the script asks
+before opening an unsigned but SHA-256-verified installer. These temporary
+prompts disappear when production signing is enabled.
 
-Windows is not included in the 0.1.0 public preview. Do not download Windows
-installers shared by unofficial accounts.
+The source is public:
 
-## Updating
+- [install.sh](install.sh)
+- [install.ps1](install.ps1)
 
-Automatic updates are disabled for unsigned previews. To update:
+## Install a specific version
 
-1. Open the [product page](https://commandcode.ai/gui).
-2. Download and verify the newest DMG.
-3. Install it over the existing version.
+macOS or Linux:
 
-Signed builds will use the normal operating-system trust flow and support
-automatic updates.
+```bash
+curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.sh | COMMANDCODE_VERSION=0.1.0 bash
+```
+
+Windows PowerShell:
+
+```powershell
+$env:COMMANDCODE_VERSION="0.1.0"; irm https://raw.githubusercontent.com/CommandCodeAI/gui/main/install.ps1 | iex
+```
 
 ## Getting help
 
 If installation fails, [open a bug report](https://github.com/CommandCodeAI/gui/issues/new/choose)
-with your operating system, device architecture, downloaded filename, and the
-exact error. Never include tokens, API keys, private project files, or `.env`
-contents.
+with the operating system, architecture, downloaded filename, and exact error.
+Never include tokens, API keys, private project files, or `.env` contents.
