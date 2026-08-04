@@ -15,8 +15,8 @@ Running the same command again installs the newest available version.
 
 ### macOS and Linux
 
-One command for both. The script detects the system - Apple silicon macOS or
-Ubuntu/Debian x64 Linux - and installs the matching build:
+One command for both. The script detects the system - Apple silicon or Intel
+macOS, or Ubuntu/Debian x64 Linux - and installs the matching build:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | bash

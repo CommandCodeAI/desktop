@@ -212,6 +212,17 @@ case "$operating_system:$machine_architecture" in
 		artifact_architecture="arm64"
 		artifact_extension="dmg"
 		;;
+	Darwin:x86_64)
+		require_command codesign
+		require_command ditto
+		require_command hdiutil
+		require_command open
+		require_command pgrep
+		require_command spctl
+		platform="macOS"
+		artifact_architecture="x64"
+		artifact_extension="dmg"
+		;;
 	Linux:x86_64 | Linux:amd64)
 		platform="Linux"
 		artifact_architecture="amd64"
