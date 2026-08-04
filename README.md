@@ -38,15 +38,6 @@ The installer:
 4. Verifies GitHub's published SHA-256 digest.
 5. Installs and opens Command Code.
 
-It exits without installing when a matching verified release is unavailable.
-
-> [!IMPORTANT]
-> macOS releases are signed with an Apple Developer ID and notarized by Apple.
-> The installer verifies the signature and Gatekeeper assessment and stops if
-> either check fails - it never modifies a build or weakens a security
-> control. Windows preview builds are not yet production-signed; the installer
-> asks before opening one, and that prompt disappears when Windows signing
-> lands.
 
 [Read `install.sh`](install.sh) ·
 [Read `install.ps1`](install.ps1) ·
