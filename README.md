@@ -4,7 +4,7 @@
 
 The visual workspace for Command Code.
 
-[Product page](https://commandcode.ai/) · [Releases](https://github.com/CommandCodeAI/gui/releases) · [Report a bug](https://github.com/CommandCodeAI/gui/issues/new/choose) · [Discord](https://commandcode.ai/discord)
+[Product page](https://commandcode.ai/) · [Releases](https://github.com/CommandCodeAI/desktop/releases) · [Report a bug](https://github.com/CommandCodeAI/desktop/issues/new/choose) · [Discord](https://commandcode.ai/discord)
 
 </div>
 
@@ -48,11 +48,12 @@ The installer:
 It exits without installing when a matching verified release is unavailable.
 
 > [!IMPORTANT]
-> Preview builds are not yet production-signed and notarized for public
-> distribution. The installer asks before applying a temporary unsigned-build
-> workaround to Command Code. It never disables Gatekeeper, SmartScreen, or
-> another system-wide security control. These prompts will disappear from
-> signed production builds.
+> macOS releases are signed with an Apple Developer ID and notarized by Apple.
+> The installer verifies the signature and Gatekeeper assessment and stops if
+> either check fails - it never modifies a build or weakens a security
+> control. Windows preview builds are not yet production-signed; the installer
+> asks before opening one, and that prompt disappears when Windows signing
+> lands.
 
 [Read `install.sh`](install.sh) ·
 [Read `install.ps1`](install.ps1) ·
@@ -64,13 +65,13 @@ It exits without installing when a matching verified release is unavailable.
 macOS or Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | COMMANDCODE_VERSION=0.1.0 bash
+curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | COMMANDCODE_VERSION=0.1.3 bash
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:COMMANDCODE_VERSION="0.1.0"; irm https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.ps1 | iex
+$env:COMMANDCODE_VERSION="0.1.3"; irm https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.ps1 | iex
 ```
 
 </details>

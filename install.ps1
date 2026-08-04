@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$Repository = "CommandCodeAI/gui"
+$Repository = "CommandCodeAI/desktop"
 $ApiRoot = "https://api.github.com/repos/$Repository"
 $Headers = @{
 	Accept = "application/vnd.github+json"

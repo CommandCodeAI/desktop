@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-REPOSITORY="CommandCodeAI/gui"
+REPOSITORY="CommandCodeAI/desktop"
 API_ROOT="https://api.github.com/repos/$REPOSITORY"
 TEMPORARY_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/command-code-install.XXXXXX")"
 MOUNT_POINT=""
@@ -24,19 +24,6 @@ fail() {
 require_command() {
 	command -v "$1" >/dev/null 2>&1 ||
 		fail "$1 is required but is not installed."
-}
-
-confirm_unsigned_macos() {
-	printf '%s\n' \
-		'This preview is not yet signed and notarized for public distribution.' \
-		'Continuing will remove quarantine from Command Code only and apply' \
-		'a local ad-hoc signature. It will not disable Gatekeeper.'
-	printf 'Continue? [y/N] '
-	read -r confirmation </dev/tty || confirmation=""
-	case "$confirmation" in
-		y | Y | yes | YES) ;;
-		*) fail "Installation cancelled." ;;
-	esac
 }
 
 has_developer_id_signature() {
@@ -181,16 +168,13 @@ install_macos() {
 	hdiutil detach "$MOUNT_POINT" >/dev/null 2>&1 || true
 	MOUNT_POINT=""
 
-	if ! spctl --assess --type execute "$staged_app" >/dev/null 2>&1; then
-		if has_developer_id_signature "$staged_app"; then
-			fail "The Developer ID release failed Gatekeeper assessment. Installation stopped without changing the existing app."
-		fi
-		confirm_unsigned_macos
-		xattr -dr com.apple.quarantine "$staged_app"
-		codesign --force --deep --sign - "$staged_app"
-		codesign --verify --deep --strict "$staged_app" >/dev/null 2>&1 ||
-			fail "The local ad-hoc signature could not be verified."
-	fi
+	# Releases are signed with a Developer ID and notarized. Anything that
+	# fails these checks is a damaged or tampered download - never patch
+	# around it on the user's machine.
+	has_developer_id_signature "$staged_app" ||
+		fail "The download is not signed with the Command Code Developer ID. Installation stopped without changing the existing app."
+	spctl --assess --type execute "$staged_app" >/dev/null 2>&1 ||
+		fail "The release failed Gatekeeper assessment. The download may be damaged. Installation stopped without changing the existing app."
 
 	if pgrep -x "Command Code" >/dev/null 2>&1; then
 		fail "Quit Command Code, then run the installer again."
@@ -224,7 +208,6 @@ case "$operating_system:$machine_architecture" in
 		require_command open
 		require_command pgrep
 		require_command spctl
-		require_command xattr
 		platform="macOS"
 		artifact_architecture="arm64"
 		artifact_extension="dmg"
