@@ -13,17 +13,10 @@ The visual workspace for Command Code.
 Copy the command for your operating system and paste it into the terminal.
 Running the same command again installs the newest available version.
 
-### macOS
+### macOS and Linux
 
-Apple silicon:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | bash
-```
-
-### Linux
-
-Ubuntu or Debian, x64:
+One command for both. The script detects the system - Apple silicon macOS or
+Ubuntu/Debian x64 Linux - and installs the matching build:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | bash
