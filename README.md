@@ -1,6 +1,6 @@
 <div align="center">
 
-# Command Code GUI
+# Command Code Desktop App
 
 The visual workspace for Command Code.
 
