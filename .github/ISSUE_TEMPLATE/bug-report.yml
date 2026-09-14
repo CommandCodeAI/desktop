@@ -21,6 +21,8 @@ body:
       label: Operating system
       options:
         - macOS (Apple silicon)
+        - macOS (Intel)
+        - Windows
         - Linux (Debian/Ubuntu)
         - Linux (other)
     validations:
