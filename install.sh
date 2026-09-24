@@ -28,8 +28,10 @@ require_command() {
 
 has_developer_id_signature() {
 	app_path="$1"
-	codesign -dv --verbose=4 "$app_path" 2>&1 |
-		grep -q '^Authority=Developer ID Application:'
+	# Capture first: `grep -q` exits on the first match, codesign then dies
+	# of SIGPIPE, and pipefail turns a valid signature into a failure.
+	signature="$(codesign -dv --verbose=4 "$app_path" 2>&1)" || return 1
+	printf '%s\n' "$signature" | grep -q '^Authority=Developer ID Application:'
 }
 
 is_valid_version() {
