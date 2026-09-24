@@ -49,7 +49,7 @@ read_asset_metadata() {
 	release_file="$2"
 
 	awk -v wanted="$artifact_name" '
-		/"url": "https:\/\/api.github.com\/repos\/CommandCodeAI\/gui\/releases\/assets\// {
+		/"url": "https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/releases\/assets\// {
 			in_asset = 1
 			asset_name = ""
 			digest = ""
@@ -209,7 +209,7 @@ case "$operating_system:$machine_architecture" in
 		require_command pgrep
 		require_command spctl
 		platform="macOS"
-		artifact_architecture="arm64"
+		artifact_architecture="macOS-Apple-Silicon-arm64"
 		artifact_extension="dmg"
 		;;
 	Darwin:x86_64)
@@ -220,7 +220,7 @@ case "$operating_system:$machine_architecture" in
 		require_command pgrep
 		require_command spctl
 		platform="macOS"
-		artifact_architecture="x64"
+		artifact_architecture="macOS-Intel-x64"
 		artifact_extension="dmg"
 		;;
 	Linux:x86_64 | Linux:amd64)
