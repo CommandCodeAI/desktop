@@ -28,8 +28,10 @@ require_command() {
 
 has_developer_id_signature() {
 	app_path="$1"
-	codesign -dv --verbose=4 "$app_path" 2>&1 |
-		grep -q '^Authority=Developer ID Application:'
+	# Capture first: `grep -q` exits on the first match, codesign then dies
+	# of SIGPIPE, and pipefail turns a valid signature into a failure.
+	signature="$(codesign -dv --verbose=4 "$app_path" 2>&1)" || return 1
+	printf '%s\n' "$signature" | grep -q '^Authority=Developer ID Application:'
 }
 
 is_valid_version() {
@@ -49,7 +51,7 @@ read_asset_metadata() {
 	release_file="$2"
 
 	awk -v wanted="$artifact_name" '
-		/"url": "https:\/\/api.github.com\/repos\/CommandCodeAI\/gui\/releases\/assets\// {
+		/"url": "https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/releases\/assets\// {
 			in_asset = 1
 			asset_name = ""
 			digest = ""
@@ -209,7 +211,7 @@ case "$operating_system:$machine_architecture" in
 		require_command pgrep
 		require_command spctl
 		platform="macOS"
-		artifact_architecture="arm64"
+		artifact_architecture="macOS-Apple-Silicon-arm64"
 		artifact_extension="dmg"
 		;;
 	Darwin:x86_64)
@@ -220,7 +222,7 @@ case "$operating_system:$machine_architecture" in
 		require_command pgrep
 		require_command spctl
 		platform="macOS"
-		artifact_architecture="x64"
+		artifact_architecture="macOS-Intel-x64"
 		artifact_extension="dmg"
 		;;
 	Linux:x86_64 | Linux:amd64)
