@@ -26,8 +26,24 @@ $Architecture = $env:PROCESSOR_ARCHITEW6432
 if (-not $Architecture) {
 	$Architecture = $env:PROCESSOR_ARCHITECTURE
 }
-if ($Architecture -ne "AMD64") {
-	Stop-Install "The current Windows preview supports x64 only."
+if ($Architecture -eq "ARM64") {
+	# There is no native ARM64 build yet. Windows 11 on ARM runs x64 apps
+	# through its built-in emulation (Windows 10 on ARM emulates only 32-bit
+	# x86), and the app's own updater keeps installing the x64 build.
+	if (
+		[System.Environment]::OSVersion.Platform -eq [System.PlatformID]::Win32NT -and
+		[System.Environment]::OSVersion.Version.Build -lt 22000
+	) {
+		Stop-Install "Command Code needs Windows 11 on ARM PCs, because Windows 10 on ARM cannot run x64 apps. Upgrade to Windows 11, then run this installer again."
+	}
+	Write-Host "Windows on ARM detected: installing the x64 build, which runs through Windows x64 emulation."
+}
+elseif ($Architecture -ne "AMD64") {
+	$ReportedArchitecture = "did not report its processor architecture"
+	if ($Architecture) {
+		$ReportedArchitecture = "reports '$Architecture'"
+	}
+	Stop-Install "This installer needs 64-bit Windows (x64, or Windows 11 on ARM). This PC $ReportedArchitecture."
 }
 
 if ($env:COMMANDCODE_VERSION) {
