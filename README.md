@@ -16,7 +16,8 @@ Running the same command again installs the newest available version.
 ### macOS and Linux
 
 One command for both. The script detects the system - Apple silicon or Intel
-macOS, or Ubuntu/Debian x64 Linux - and installs the matching build:
+macOS, or x64 Linux (Debian, Ubuntu, Fedora, RHEL, openSUSE) - and installs
+the matching build:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.sh | bash
@@ -71,6 +72,10 @@ automatically. Manual packages are available on the
 | macOS | `.dmg` | Apple silicon |
 | Linux | `.deb` | x64 |
 | Windows | `.exe` | x64 |
+
+On Fedora, RHEL, and openSUSE, the installer prefers a native `.rpm` when a
+release publishes one and otherwise installs from the verified `.deb`,
+repacking it into a local RPM on the machine.
 
 ## What you can do
 

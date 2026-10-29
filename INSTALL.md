@@ -18,7 +18,8 @@ irm https://raw.githubusercontent.com/CommandCodeAI/desktop/main/install.ps1 | i
 
 1. Detect the operating system and supported CPU architecture.
 2. Read the newest release from `CommandCodeAI/desktop`.
-3. Select the matching `.dmg`, `.deb`, or `.exe`.
+3. Select the matching `.dmg`, `.deb`, or `.exe` (or a native `.rpm` when
+   one is published).
 4. Verify the SHA-256 digest published by GitHub.
 5. Install and open Command Code.
 
@@ -36,6 +37,24 @@ The source is public:
 
 - [install.sh](install.sh)
 - [install.ps1](install.ps1)
+
+## RPM-based Linux (Fedora, RHEL, openSUSE)
+
+Releases currently publish a Linux `.deb`. On rpm-based distributions the
+installer:
+
+1. Downloads the `.deb` and verifies its SHA-256 digest first, exactly as on
+   Debian and Ubuntu.
+2. Prefers a native `.rpm` automatically as soon as a release publishes one.
+3. Unpacks the verified `.deb` and repacks the payload into a local RPM with
+   `rpmbuild`, then installs it with `dnf` or `zypper` so the package is
+   tracked and removable through the package manager.
+4. Falls back to installing the payload directly (with the same file layout,
+   launcher, and desktop entry) when `rpmbuild` is not available; that
+   variant prints the exact paths to remove when uninstalling.
+
+Uninstall a local-RPM installation with `sudo dnf remove command-code` (or
+`sudo zypper remove command-code`).
 
 ## Install a specific version
 
