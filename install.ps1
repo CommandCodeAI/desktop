@@ -55,10 +55,16 @@ foreach ($CandidateRelease in $Releases) {
 	if ($CandidateVersion -notmatch "^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$") {
 		continue
 	}
-	$CandidateArtifactName = "CommandCode-$CandidateVersion-x64-setup.exe"
-	$CandidateAsset = $CandidateRelease.assets |
-		Where-Object { $_.name -eq $CandidateArtifactName } |
-		Select-Object -First 1
+	# Releases from 0.1.61 name the installer short; older ones carry the version.
+	$CandidateAsset = $null
+	foreach ($CandidateArtifactName in @("CommandCode-Setup.exe", "CommandCode-$CandidateVersion-x64-setup.exe")) {
+		$CandidateAsset = $CandidateRelease.assets |
+			Where-Object { $_.name -eq $CandidateArtifactName } |
+			Select-Object -First 1
+		if ($CandidateAsset) {
+			break
+		}
+	}
 	if ($CandidateAsset) {
 		$Release = $CandidateRelease
 		$Version = $CandidateVersion

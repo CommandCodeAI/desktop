@@ -49,8 +49,11 @@ validate_version() {
 read_asset_metadata() {
 	artifact_name="$1"
 	release_file="$2"
+	# The short installer names repeat in every release, so the asset must
+	# also come from this version's release.
+	asset_version="$3"
 
-	awk -v wanted="$artifact_name" '
+	awk -v wanted="$artifact_name" -v release_path="/releases/download/v$asset_version/" '
 		/"url": "https:\/\/api.github.com\/repos\/[^\/]+\/[^\/]+\/releases\/assets\// {
 			in_asset = 1
 			asset_name = ""
@@ -72,7 +75,7 @@ read_asset_metadata() {
 			value = $0
 			sub(/^.*"browser_download_url": "/, "", value)
 			sub(/".*$/, "", value)
-			if (asset_name == wanted) {
+			if (asset_name == wanted && index(value, release_path)) {
 				print digest
 				print value
 				exit
@@ -213,6 +216,7 @@ case "$operating_system:$machine_architecture" in
 		platform="macOS"
 		artifact_architecture="macOS-Apple-Silicon-arm64"
 		artifact_extension="dmg"
+		short_artifact="CommandCode-arm64.dmg"
 		;;
 	Darwin:x86_64)
 		require_command codesign
@@ -224,11 +228,13 @@ case "$operating_system:$machine_architecture" in
 		platform="macOS"
 		artifact_architecture="macOS-Intel-x64"
 		artifact_extension="dmg"
+		short_artifact="CommandCode-x64.dmg"
 		;;
 	Linux:x86_64 | Linux:amd64)
 		platform="Linux"
 		artifact_architecture="amd64"
 		artifact_extension="deb"
+		short_artifact=""
 		;;
 	Darwin:*)
 		fail "The current macOS preview supports Apple silicon only."
@@ -274,14 +280,18 @@ asset_metadata=""
 while IFS= read -r candidate_version; do
 	[ -n "$candidate_version" ] || continue
 	is_valid_version "$candidate_version" || continue
-	candidate_artifact="CommandCode-$candidate_version-$artifact_architecture.$artifact_extension"
-	candidate_metadata="$(read_asset_metadata "$candidate_artifact" "$release_file")"
-	if [ -n "$candidate_metadata" ]; then
-		version="$candidate_version"
-		artifact_name="$candidate_artifact"
-		asset_metadata="$candidate_metadata"
-		break
-	fi
+	# Releases from 0.1.61 name the DMG short; older ones carry the version.
+	for candidate_artifact in \
+		$short_artifact \
+		"CommandCode-$candidate_version-$artifact_architecture.$artifact_extension"; do
+		candidate_metadata="$(read_asset_metadata "$candidate_artifact" "$release_file" "$candidate_version")"
+		if [ -n "$candidate_metadata" ]; then
+			version="$candidate_version"
+			artifact_name="$candidate_artifact"
+			asset_metadata="$candidate_metadata"
+			break 2
+		fi
+	done
 done <<EOF
 $release_versions
 EOF
