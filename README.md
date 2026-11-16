@@ -70,7 +70,7 @@ automatically. Manual packages are available on the
 | --- | --- | --- |
 | macOS | `.dmg` | Apple silicon |
 | Linux | `.deb` | x64 |
-| Windows | `.exe` | x64 |
+| Windows | `.exe` | x64 (Windows 11 on ARM runs it through x64 emulation) |
 
 ## What you can do
 
